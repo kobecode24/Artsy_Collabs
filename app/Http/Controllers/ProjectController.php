@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -27,7 +28,24 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate the image
+        ]);
+
+        $project = Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            // Add other fields as necessary
+        ]);
+
+        // Check if an image was uploaded
+        if ($request->hasFile('image')) {
+            $project->addMediaFromRequest('image')->toMediaCollection('projects');
+        }
+
+        return redirect()->route('admin.projects.index')->with('success', 'Project added successfully.');
     }
 
     /**

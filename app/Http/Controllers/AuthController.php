@@ -2,11 +2,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class AuthController extends Controller
 {
@@ -15,29 +16,26 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
     public function register(RegistrationRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
+        if ($request->hasFile('image')) {
+            $user->addMediaFromRequest('image')->toMediaCollection('images', 'public');
+        }
+
         $user->assignRole('artist');
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 
     public function showLoginForm()
@@ -45,11 +43,9 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        if (Auth::attempt($request->validated())) {
             return redirect()->intended('home');
         }
 
