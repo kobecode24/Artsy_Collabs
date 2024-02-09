@@ -37,10 +37,12 @@ class User extends Authenticatable implements HasMedia
         'password',
     ];
 
-    public function projects()
+
+    public function projectsAsArtist()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class, 'project_user')->withTimestamps();
     }
+
     public function requests()
     {
         return $this->hasMany(Request::class);

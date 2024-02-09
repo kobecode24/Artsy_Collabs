@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Project extends Model
+class Project extends Model implements HasMedia
 {
+    use Notifiable;
+    use InteractsWithMedia;
     use HasFactory;
 
     protected $fillable = [
@@ -14,14 +19,15 @@ class Project extends Model
         'description',
         'requirements',
     ];
-    public function user()
+
+    public function artists()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'project_user')->withTimestamps();
     }
 
     public function partners()
     {
-        return $this->belongsToMany(Partner::class, 'partner_project');
+        return $this->belongsToMany(Partner::class, 'project_partner')->withTimestamps();
     }
 
     public function requests()
@@ -29,3 +35,4 @@ class Project extends Model
         return $this->hasMany(Request::class);
     }
 }
+

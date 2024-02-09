@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePartnerRequest;
+use App\Http\Requests\StoreProjectRequest;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class PartnerController extends Controller
@@ -11,7 +14,8 @@ class PartnerController extends Controller
      */
     public function index()
     {
-        //
+        $partners = Partner::all();
+        return view('admin.partners.index', compact('partners'));
     }
 
     /**
@@ -19,15 +23,21 @@ class PartnerController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.partners.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePartnerRequest $request)
     {
-        //
+        $partnerData = $request->validated();
+        $partner = Partner::create($partnerData);
+
+        if ($request->hasFile('image')) {
+            $partner->addMediaFromRequest('image')->toMediaCollection('partners');
+        }
+        return redirect()->route("admin.partners.index");
     }
 
     /**
@@ -41,24 +51,31 @@ class PartnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Partner $partner)
     {
-        //
+        return view('admin.partners.edit', compact('partner'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreProjectRequest $request, Partner $partner)
     {
-        //
+        $partner->update($request->validated());
+        if ($request->hasFile('image')) {
+            $partner->clearMediaCollection('partner');
+            $partner->addMediaFromRequest('image')->toMediaCollection('partner');
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Partner $partner)
     {
-        //
+        $partner->delete();
+
+        return back()->with('success', 'Partner deleted successfully.');
     }
 }

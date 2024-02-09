@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,5 +26,16 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/login', [AuthController::class, 'showLoginForm']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::get('/admin/projects/create', [ProjectController::class , 'create'])->name('admin.projects.create');
-Route::post('/admin/projects' , [ProjectController::class ,'store'])->name('admin.projects.store');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('projects', ProjectController::class);
+
+    Route::resource('partners', PartnerController::class);
+});
+
+
+
+Route::prefix('admin')->group(function () {
+    Route::get('/test', function () {
+        return 'Admin test route works';
+    });
+});
