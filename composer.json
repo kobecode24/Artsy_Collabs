@@ -12,7 +12,8 @@
         "laravel/tinker": "^2.8",
         "spatie/laravel-medialibrary": "11.0.0",
         "spatie/laravel-permission": "^6.3",
-        "ext-http": "*"
+        "ext-http": "*",
+      "ext-pdo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
