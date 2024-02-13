@@ -45,6 +45,6 @@ class User extends Authenticatable implements HasMedia
 
     public function requests()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(JoinRequest::class);
     }
 }

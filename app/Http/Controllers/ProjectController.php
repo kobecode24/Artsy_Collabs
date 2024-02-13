@@ -7,6 +7,7 @@ use App\Models\Partner;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\JoinRequest;
+use Illuminate\Http\Request;
 
 
 class ProjectController extends Controller
@@ -67,10 +68,10 @@ class ProjectController extends Controller
      */
     public function edit(string $id)
     {
+        $project = Project::findOrFail($id);
         $partners = Partner::all();
 
         $artists = User::role('artist')->get();
-        $project = Project::findOrFail($id);
         return view('admin.projects.edit', compact('project', 'partners', 'artists'));
     }
 
@@ -128,5 +129,44 @@ class ProjectController extends Controller
 
         return back()->with('success', 'Your request to join the project has been submitted.');
     }
+
+    public function listRequests()
+    {
+        $artist = User::role('artist')->get();
+        $projects = Project::all();
+
+        $joinRequests = JoinRequest::with(['user', 'project'])->get();
+        return view('admin.requests.index', compact('joinRequests' , 'artist', 'projects'));
+    }
+
+
+    public function updateRequestStatus(Request $request, $joinRequestId)
+    {
+        $joinRequest = JoinRequest::findOrFail($joinRequestId);
+        $status = $request->input('status');
+
+        if ($status === 'accept') {
+            // Update the join request status to accepted (1)
+            $joinRequest->status = 1;
+            $joinRequest->save();
+
+            // Add the user to the project_user table
+            $project = Project::find($joinRequest->project_id);
+            $project->users()->syncWithoutDetaching([$joinRequest->user_id]);
+
+            return redirect()->back()->with('success', "Request accepted and user added to the project.");
+        } elseif ($status === 'decline') {
+            $joinRequest->status = 2;
+            $joinRequest->save();
+
+            $project = Project::find($joinRequest->project_id);
+            $project->users()->detach($joinRequest->user_id);
+
+            return redirect()->back()->with('success', "Request declined and user removed from the project, if they were added previously.");
+        }
+
+        return redirect()->back()->with('error', "Invalid status.");
+    }
+
 
 }

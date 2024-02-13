@@ -20,6 +20,10 @@ class Project extends Model implements HasMedia
         'requirements',
     ];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id')->withTimestamps();
+    }
     public function artists()
     {
         return $this->belongsToMany(User::class, 'project_user')->withTimestamps();
@@ -42,7 +46,5 @@ class Project extends Model implements HasMedia
 
         return $joinRequest ? $joinRequest->status : null;
     }
-
-
 }
 

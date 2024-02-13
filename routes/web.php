@@ -31,6 +31,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('projects', ProjectController::class);
 
     Route::resource('partners', PartnerController::class);
+
+    Route::get('/requests', [ProjectController::class, 'listRequests'])->name('admin.requests.index');
+    Route::put('/requests/{joinRequest}', [ProjectController::class, 'updateRequestStatus'])->name('requests.update');
+
 });
 
 Route::prefix('user')->name('user.')->group(function () {
@@ -39,7 +43,6 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('projects/{project}', [UserController::class, 'showProject'])->name('projects.show');
 
     Route::post('/projects/{project}/request-join', [ProjectController::class, 'requestJoin'])->name('projects.requestJoin');
-
 
 });
 
