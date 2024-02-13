@@ -1,3 +1,5 @@
 build:
-    docker:
-        web: Dockerfile
+  docker:
+    web: Dockerfile
+run:
+  web: heroku-php-apache2 public/
