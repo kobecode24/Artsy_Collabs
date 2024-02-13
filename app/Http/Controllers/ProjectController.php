@@ -6,7 +6,8 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Models\Partner;
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\JoinRequest;
+
 
 class ProjectController extends Controller
 {
@@ -80,6 +81,14 @@ class ProjectController extends Controller
     {
         $project->update($request->validated());
 
+        if ($request->has('artist_ids')) {
+            $project->artists()->sync($request->validated()['artist_ids']);
+        }
+
+        if ($request->has('partner_ids')) {
+            $project->partners()->sync($request->validated()['partner_ids']);
+        }
+
         if ($request->hasFile('image')) {
             $project->clearMediaCollection('projects');
             $project->addMediaFromRequest('image')->toMediaCollection('projects');
@@ -96,4 +105,28 @@ class ProjectController extends Controller
         $project->delete();
         return back();
     }
+
+    public function requestJoin(JoinRequest $request, $projectId)
+    {
+        $user = auth()->user();
+        $project = Project::findOrFail($projectId);
+
+        $existingRequest = $project->requests()->where('user_id', $user->id)->first();
+
+        if ($existingRequest) {
+            $existingRequest->update(['status' => 0]);
+            return back()->with('success', 'Your request to join the project has been submitted.');
+        }
+
+        JoinRequest::create([
+            'user_id' => $user->id,
+            'project_id' => $project->id,
+            'status' => 0,
+        ]);
+
+
+
+        return back()->with('success', 'Your request to join the project has been submitted.');
+    }
+
 }

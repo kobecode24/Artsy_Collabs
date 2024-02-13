@@ -24,9 +24,11 @@ class StoreProjectRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'requirements' => 'required|string',
+            'artist_ids' => 'sometimes|array',
             'artist_ids.*' => 'exists:users,id',
+            'partner_ids' => 'sometimes|array',
             'partner_ids.*' => 'exists:partners,id',
+
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

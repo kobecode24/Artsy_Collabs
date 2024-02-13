@@ -69,7 +69,7 @@
     </div>
 
     <div class="text-center mt-8">
-        <a href="{{ route('admin.projects.index') }}" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Projects</a>
+        <a href="{{ route('user.projects.list') }}" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Projects</a>
     </div>
 </div>
 </body>

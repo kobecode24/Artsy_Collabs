@@ -37,7 +37,7 @@ class PartnerController extends Controller
         if ($request->hasFile('image')) {
             $partner->addMediaFromRequest('image')->toMediaCollection('partners');
         }
-        return redirect()->route("admin.partners.index");
+        return redirect()->route("admin.partners.index")->with('success', 'Partner created successfully.');
     }
 
     /**
@@ -66,7 +66,7 @@ class PartnerController extends Controller
             $partner->clearMediaCollection('partner');
             $partner->addMediaFromRequest('image')->toMediaCollection('partner');
         }
-
+        return redirect()->route("admin.partners.index")->with('success', 'Partner updated successfully.');
     }
 
     /**

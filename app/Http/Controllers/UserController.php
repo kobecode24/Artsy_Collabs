@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -61,4 +62,17 @@ class UserController extends Controller
     {
         //
     }
+
+    public function listProjects()
+    {
+        $projects = Project::all();
+        return view('user.projects.index', compact('projects'));
+    }
+
+    public function showProject(Project $project)
+    {
+        // Show details of a specific project
+        return view('user.projects.show', compact('project'));
+    }
+
 }

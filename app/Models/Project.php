@@ -32,7 +32,17 @@ class Project extends Model implements HasMedia
 
     public function requests()
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(JoinRequest::class);
     }
+
+    public function userJoinRequestStatus()
+    {
+        $userId = auth()->id();
+        $joinRequest = $this->requests()->where('user_id', $userId)->first();
+
+        return $joinRequest ? $joinRequest->status : null;
+    }
+
+
 }
 
