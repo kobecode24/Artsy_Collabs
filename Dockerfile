@@ -26,11 +26,10 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install PHP dependencies with Composer
-RUN composer install --no-dev --optimize-autoloader && \
-    php artisan key:generate && \
-    php artisan config:cache
+# Skip the scripts that require .env or application key during the build
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Change ownership of the storage and bootstrap cache directories
+# Correct permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
