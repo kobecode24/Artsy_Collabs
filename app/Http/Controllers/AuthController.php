@@ -46,7 +46,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->validated())) {
-            return redirect()->intended('home');
+            return redirect()->route('user.projects.list');
         }
 
         return redirect()->back()->withInput($request->except('password'))
