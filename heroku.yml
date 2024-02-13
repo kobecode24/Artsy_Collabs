@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: heroku-php-apache2 public/
+  web: apache2-foreground
