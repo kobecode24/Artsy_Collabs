@@ -11,7 +11,7 @@
     <div class="container mx-auto px-6 py-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <a href="{{ url('/') }}" class="text-white text-lg font-semibold">Arty Collabs</a>
+                <a href="{{ route('user.projects.list') }}" class="text-white text-lg font-semibold">Arty Collabs</a>
                 <ul class="flex items-center space-x-4 ml-10">
                     <li><a href="{{ route('home') }}" class="text-gray-300 hover:text-white">Home</a></li>
                     <li><a href="{{--{{ route('about') }}--}}" class="text-gray-300 hover:text-white">About</a></li>

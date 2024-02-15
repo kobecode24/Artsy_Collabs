@@ -14,6 +14,8 @@ class User extends Authenticatable implements HasMedia
     use HasRoles;
     use InteractsWithMedia;
 
+    public mixed $projects;
+
 
     /**
      * The attributes that are mass assignable.
@@ -46,5 +48,10 @@ class User extends Authenticatable implements HasMedia
     public function requests()
     {
         return $this->hasMany(JoinRequest::class);
+    }
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class)->withTimestamps();
+
     }
 }
