@@ -29,7 +29,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(["isLoggedIn","isAdmin"])->group(function () {
     Route::resource('projects', ProjectController::class);
 
     Route::resource('partners', PartnerController::class);
@@ -39,7 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 });
 
-Route::prefix('user')->name('user.')->group(function () {
+Route::prefix('user')->name('user.')->middleware(["isLoggedIn"])->group(function () {
     Route::get('projects', [UserController::class, 'listProjects'])->name('projects.list');
 
     Route::get('projects/{project}', [UserController::class, 'showProject'])->name('projects.show');
