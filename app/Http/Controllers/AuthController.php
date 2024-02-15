@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -51,5 +52,14 @@ class AuthController extends Controller
 
         return redirect()->back()->withInput($request->except('password'))
             ->withErrors(['email' => 'The provided credentials do not match our records.']);
+    }
+
+    public function logout(Request $request) {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }
