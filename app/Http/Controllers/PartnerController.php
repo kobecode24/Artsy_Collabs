@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Models\Partner;
+use Gate;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class PartnerController extends Controller
 {
@@ -14,6 +17,7 @@ class PartnerController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('affiliate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $partners = Partner::all();
         return view('admin.partners.index', compact('partners'));
     }

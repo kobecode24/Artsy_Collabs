@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePartnerRequest extends FormRequest
@@ -11,7 +12,7 @@ class StorePartnerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('call_center_edit');
     }
 
     /**
